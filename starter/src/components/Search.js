@@ -1,22 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import * as BooksAPI from "../utils/BooksAPI";
+import Book from "./Book";
 
 export default function Search() {
 
   const [query, setQuery] = useState("");
   const [booksFound, setBooksFound] = useState([]);
 
-  const findBooks = (query) => {
+  useEffect(() => {
     const books = async () => {
-      const response = await BooksAPI.search(query, 10);
+      const response = await BooksAPI.search(query);
       setBooksFound(response);
       console.log(response);
     }
 
-    books();
-    setQuery(query);
-  }
+    if (query !== '') {books()}
+
+  }, [query]);
+
+  const updateQuery = (q) => {
+    setQuery(q);
+  };
 
   return(
       <div className="search-books">
@@ -29,45 +34,20 @@ export default function Search() {
               type="text"
               placeholder="Search by title, author, or ISBN"
               value={query}
-              onChange={(e) => findBooks(e.target.value)}
+              onChange={(e) => updateQuery(e.target.value)}
             />
           </div>
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {booksFound.map((book, index) => 
-              <li key={index}>
-                <div className="book">
-                  <div className="book-top">
-                    <div
-                      className="book-cover"
-                      style={{
-                        width: 128,
-                        height: 193,
-                        backgroundImage: `url(${book.imageLinks.thumbnail})`,
-                      }}
-                    ></div>
-                    <div className="book-shelf-changer">
-                      <select>
-                        <option value="none" disabled>
-                          Move to...
-                        </option>
-                        <option value="currentlyReading">
-                          Currently Reading
-                        </option>
-                        <option value="wantToRead">Want to Read</option>
-                        <option value="read">Read</option>
-                        <option value="none">None</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="book-title">{book.title}</div>
-                  {book.authors.map(author =>
-                    <div className="book-authors">{author}</div>
-                  )}
-                </div>
-              </li>
-            )}
+            {!booksFound.error
+              ? (booksFound?.map((book, index) => 
+                  <li key={index}>
+                    <Book title={book?.title} authors={book?.authors} img={book?.imageLinks?.thumbnail} />
+                  </li>)
+                )
+              : (<p>No results!</p>) 
+            }
           </ol>
         </div>
       </div>
