@@ -1,4 +1,6 @@
-export default function Book ({title, authors, img}) {
+export default function Book ({ title, authors, img, moveTo }) {
+
+
 
     return(
         <div className="book">
@@ -12,7 +14,7 @@ export default function Book ({title, authors, img}) {
               }}
             ></div>
             <div className="book-shelf-changer">
-              <select>
+              <select onChange={(e) => moveTo(e.target.value, title, authors, img)}>
                 <option value="none" disabled>
                   Move to...
                 </option>

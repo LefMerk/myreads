@@ -15,7 +15,7 @@ export default function Search() {
       console.log(response);
     }
 
-    if (query !== '') {books()}
+    books();
 
   }, [query]);
 
@@ -40,7 +40,7 @@ export default function Search() {
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {!booksFound.error
+            {booksFound && !booksFound.error
               ? (booksFound?.map((book, index) => 
                   <li key={index}>
                     <Book title={book?.title} authors={book?.authors} img={book?.imageLinks?.thumbnail} />
