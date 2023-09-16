@@ -3,25 +3,35 @@ import { Link } from "react-router-dom";
 import * as BooksAPI from "../utils/BooksAPI";
 import Book from "./Book";
 
-export default function Search() {
+export default function Search({ saveBook, changed }) {
 
   const [query, setQuery] = useState("");
   const [booksFound, setBooksFound] = useState([]);
+  const [noResults, setNoResults] = useState(false);
 
   useEffect(() => {
-    const books = async () => {
-      const response = await BooksAPI.search(query);
-      setBooksFound(response);
-      console.log(response);
+    
+    if (query !== "") {
+      const books = async () => {
+        const response = await BooksAPI.search(query);
+        if (response.error) {
+          setBooksFound([]);
+          setNoResults(true);
+        }
+        else {
+          setBooksFound(response);
+          setNoResults(false);
+        }
+        console.log(response);
+      }
+      changed(booksFound);
+      books();
     }
-
-    books();
-
+    else {
+      setBooksFound([]);
+    }
+    
   }, [query]);
-
-  const updateQuery = (q) => {
-    setQuery(q);
-  };
 
   return(
       <div className="search-books">
@@ -34,16 +44,16 @@ export default function Search() {
               type="text"
               placeholder="Search by title, author, or ISBN"
               value={query}
-              onChange={(e) => updateQuery(e.target.value)}
+              onChange={(e) => setQuery(e.target.value)}
             />
           </div>
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {booksFound && !booksFound.error
-              ? (booksFound?.map((book, index) => 
-                  <li key={index}>
-                    <Book title={book?.title} authors={book?.authors} img={book?.imageLinks?.thumbnail} />
+            {!noResults
+              ? (booksFound.map(book => 
+                  <li key={book.id}>
+                    <Book book={book} moveTo={saveBook} />
                   </li>)
                 )
               : (<p>No results!</p>) 

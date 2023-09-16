@@ -1,6 +1,4 @@
-export default function Book ({ title, authors, img, moveTo }) {
-
-
+export default function Book ({ book, moveTo }) {
 
     return(
         <div className="book">
@@ -10,11 +8,11 @@ export default function Book ({ title, authors, img, moveTo }) {
               style={{
                 width: 128,
                 height: 193,
-                backgroundImage: `url("${img}")`,
+                backgroundImage: `url("${book?.imageLinks?.thumbnail ? book.imageLinks.thumbnail : book?.imageLinks?.smallThumbnail}")`,
               }}
             ></div>
             <div className="book-shelf-changer">
-              <select onChange={(e) => moveTo(e.target.value, title, authors, img)}>
+              <select defaultValue={book.shelf ? book.shelf : "none"} onChange={(e) => moveTo(book, e.target.value)}>
                 <option value="none" disabled>
                   Move to...
                 </option>
@@ -27,8 +25,8 @@ export default function Book ({ title, authors, img, moveTo }) {
               </select>
             </div>
           </div>
-          <div className="book-title">{title}</div>
-          {authors.map((author, index) =>
+          <div className="book-title">{book?.title}</div>
+          {book?.authors?.map((author, index) =>
             <div key={index} className="book-authors">{author}</div>
           )}
         </div>

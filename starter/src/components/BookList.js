@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import BookShelf from "./BookShelf";
 
-export default function BookList() {
+export default function BookList({ books, moveBook }) {
 
-  const [currentlyReading, setCurrentlyReading] = useState([]);
-  const [wantToRead, setWantToRead] = useState([]);
-  const [read, setRead] = useState([]);
+  const currentlyReading = books.filter(book => book.shelf === "currentlyReading");
+  const wantToRead = books.filter(book => book.shelf === "wantToRead");
+  const read = books.filter(book => book.shelf === "read");
 
   const types = [
     {id: "currentlyReading", text: "Currently Reading"},
@@ -27,8 +27,8 @@ export default function BookList() {
         </div>
         <div className="list-books-content">
           <div>
-            {types.map((type, index) => 
-              <BookShelf key={index} title={type.text} books={stateMap[type.id]} />
+            {types.map(type => 
+              <BookShelf key={type.id} title={type.text} books={stateMap[type.id]} moveBook={moveBook} />
             )}    
           </div>
         </div>
