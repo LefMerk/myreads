@@ -21,7 +21,7 @@ export default function App() {
     allBooks();
   }, []);
 
-  const bookAction = (book, type) => {
+  const bookAction = (book, type, newListing=false) => {
     const updatedLists = books.map(b => {
       if (b.id === book.id) {
         book.shelf = type;
@@ -30,22 +30,21 @@ export default function App() {
       return b;
     })
 
+    if (newListing) {
+      book.shelf = type;
+      updatedLists.push(book);
+    }
+
     setBooks(updatedLists);
 
     BooksAPI.update(book, type);
-
-  };
-
-  const updateBookLists = (book, type) => {
-    book.shelf = type;
-    books.push(book);
   };
 
   return (
     <div className="app">
       <Routes>
         <Route exact path="/" element={<BookList books={books} moveBook={bookAction} />} />
-        <Route exact path="/search" element={<Search updateBookLists={updateBookLists} />} />
+        <Route exact path="/search" element={<Search updateBookLists={bookAction} />} />
       </Routes>
       {isLoading && <Loader />}
     </div>

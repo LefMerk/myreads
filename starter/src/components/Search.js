@@ -32,7 +32,7 @@ export default function Search({ updateBookLists }) {
           setBooksFound(response);
           setNoResults(false);
         }
-        console.log(response);
+        //console.log(response);
       }
 
       books();
@@ -63,11 +63,11 @@ export default function Search({ updateBookLists }) {
   };
 
   const categorizeBook = (book, type) => {
+    let newListing = false;
     if (!mappedBooks.has(book.id)) {
-      updateBookLists(book, type);
+      newListing = true;
     }
-
-    BooksAPI.update(book, type);
+    updateBookLists(book, type, newListing);
   };
 
   return(
