@@ -36,11 +36,16 @@ export default function App() {
 
   };
 
+  const updateBookLists = (book, type) => {
+    book.shelf = type;
+    books.push(book);
+  };
+
   return (
     <div className="app">
       <Routes>
         <Route exact path="/" element={<BookList books={books} moveBook={bookAction} />} />
-        <Route exact path="/search" element={<Search />} />
+        <Route exact path="/search" element={<Search updateBookLists={updateBookLists} />} />
       </Routes>
       {isLoading && <Loader />}
     </div>

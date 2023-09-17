@@ -3,11 +3,10 @@ import { Link } from "react-router-dom";
 import * as BooksAPI from "../utils/BooksAPI";
 import Book from "./Book";
 
-export default function Search() {
+export default function Search({ updateBookLists }) {
 
   const [query, setQuery] = useState("");
   const [booksFound, setBooksFound] = useState([]);
-  const [allBooks, setAllBooks] = useState([]);
   const [mappedBooks, setMappedBooks] = useState([]);
   const [searchedBooks, setSearchedBooks] = useState([]);
   const [noResults, setNoResults] = useState(false);
@@ -15,7 +14,6 @@ export default function Search() {
   useEffect(() => {
     const allBooks = async () => {
       const response = await BooksAPI.getAll();
-      setAllBooks(response);
       setMappedBooks(mapBooks(response));
     };
 
@@ -65,15 +63,9 @@ export default function Search() {
   };
 
   const categorizeBook = (book, type) => {
-    const updatedLists = allBooks.map(b => {
-      if (b.id === book.id) {
-        book.shelf = type;
-        return book;
-      }
-      return b;
-    })
-
-    //setBooksFound(updatedLists);
+    if (!mappedBooks.has(book.id)) {
+      updateBookLists(book, type);
+    }
 
     BooksAPI.update(book, type);
   };
