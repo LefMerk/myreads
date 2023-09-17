@@ -54,7 +54,7 @@ export default function Search({ updateBookLists }) {
     });
 
     setSearchedBooks(matchBooks);
-  }, [booksFound]);
+  }, [booksFound, mappedBooks]);
 
   const mapBooks = (books) => {
     const map = new Map();
@@ -63,10 +63,7 @@ export default function Search({ updateBookLists }) {
   };
 
   const categorizeBook = (book, type) => {
-    let newListing = false;
-    if (!mappedBooks.has(book.id)) {
-      newListing = true;
-    }
+    let newListing = !mappedBooks.has(book.id) ? true : false;
     updateBookLists(book, type, newListing);
   };
 

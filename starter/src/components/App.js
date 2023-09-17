@@ -22,19 +22,23 @@ export default function App() {
   }, []);
 
   const bookAction = (book, type, newListing=false) => {
+
+    let duplicateFlag = false;
+
     const updatedLists = books.map(b => {
       if (b.id === book.id) {
+        duplicateFlag = true;
         book.shelf = type;
         return book;
       }
       return b;
     })
-
-    if (newListing) {
+    
+    if (newListing && !duplicateFlag) {
       book.shelf = type;
       updatedLists.push(book);
     }
-
+    
     setBooks(updatedLists);
 
     BooksAPI.update(book, type);
