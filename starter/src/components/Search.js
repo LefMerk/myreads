@@ -3,14 +3,26 @@ import { Link } from "react-router-dom";
 import * as BooksAPI from "../utils/BooksAPI";
 import Book from "./Book";
 
-export default function Search({ saveBook, changed }) {
+export default function Search() {
 
   const [query, setQuery] = useState("");
   const [booksFound, setBooksFound] = useState([]);
+  const [allBooks, setAllBooks] = useState([]);
+  const [mappedBooks, setMappedBooks] = useState([]);
+  const [searchedBooks, setSearchedBooks] = useState([]);
   const [noResults, setNoResults] = useState(false);
 
   useEffect(() => {
-    
+    const allBooks = async () => {
+      const response = await BooksAPI.getAll();
+      setAllBooks(response);
+      setMappedBooks(mapBooks(response));
+    };
+
+    allBooks();
+  }, [])
+
+  useEffect(() => {   
     if (query !== "") {
       const books = async () => {
         const response = await BooksAPI.search(query);
@@ -24,14 +36,47 @@ export default function Search({ saveBook, changed }) {
         }
         console.log(response);
       }
-      changed(booksFound);
+
       books();
     }
     else {
       setBooksFound([]);
-    }
-    
+    }  
+
   }, [query]);
+
+  useEffect(() => {
+    const matchBooks = booksFound.map(book => {
+      if (mappedBooks.has(book.id)) {
+        return mappedBooks.get(book.id);
+      }
+      else {
+        return book;
+      }
+    });
+
+    setSearchedBooks(matchBooks);
+  }, [booksFound]);
+
+  const mapBooks = (books) => {
+    const map = new Map();
+    books.map(book => map.set(book.id, book));
+    return map;
+  };
+
+  const categorizeBook = (book, type) => {
+    const updatedLists = allBooks.map(b => {
+      if (b.id === book.id) {
+        book.shelf = type;
+        return book;
+      }
+      return b;
+    })
+
+    //setBooksFound(updatedLists);
+
+    BooksAPI.update(book, type);
+  };
 
   return(
       <div className="search-books">
@@ -51,9 +96,9 @@ export default function Search({ saveBook, changed }) {
         <div className="search-books-results">
           <ol className="books-grid">
             {!noResults
-              ? (booksFound.map(book => 
+              ? (searchedBooks.map(book => 
                   <li key={book.id}>
-                    <Book book={book} moveTo={saveBook} />
+                    <Book book={book} moveTo={categorizeBook}  />
                   </li>)
                 )
               : (<p>No results!</p>) 

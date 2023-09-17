@@ -4,23 +4,22 @@ import { Routes, Route } from "react-router-dom";
 import BookList from "./BookList";
 import Search from "./Search";
 import * as BooksAPI from "../utils/BooksAPI";
+import Loader from "./Loader";
 
 export default function App() {
   const [books, setBooks] = useState([]);
-  const [changedSearch, setChangedSearch] = useState([]);
-
-  const updateSearch = (changed) => {
-    setChangedSearch(changed);
-  };
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     const allBooks = async () => {
       const response = await BooksAPI.getAll();
       setBooks(response);
+      setIsLoading(false);
     };
 
     allBooks();
-  }, [changedSearch]);
+  }, []);
 
   const bookAction = (book, type) => {
     const updatedLists = books.map(b => {
@@ -41,8 +40,9 @@ export default function App() {
     <div className="app">
       <Routes>
         <Route exact path="/" element={<BookList books={books} moveBook={bookAction} />} />
-        <Route exact path="/search" element={<Search saveBook={bookAction} changed={updateSearch} />} />
+        <Route exact path="/search" element={<Search />} />
       </Routes>
+      {isLoading && <Loader />}
     </div>
   );
 }
