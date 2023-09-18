@@ -177,6 +177,7 @@ body,
 }
 
 /* overlay */
+
 .overlay {
   position: fixed;
   width: 100%;
@@ -194,4 +195,16 @@ body,
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
+}
+
+/* Not found page */
+
+.not-found {
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+  gap: 20px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  padding-top: 100px;
 }

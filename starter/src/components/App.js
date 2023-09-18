@@ -1,10 +1,11 @@
 import "../css/App.css";
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import * as BooksAPI from "../utils/BooksAPI";
 import BookList from "./BookList";
 import Search from "./Search";
-import * as BooksAPI from "../utils/BooksAPI";
 import Loader from "./Loader";
+import NotFound from "./NotFound";
 
 export default function App() {
   const [books, setBooks] = useState([]);
@@ -47,6 +48,7 @@ export default function App() {
   return (
     <div className="app">
       <Routes>
+        <Route path="*" element={<NotFound />} />
         <Route exact path="/" element={<BookList books={books} moveBook={bookAction} />} />
         <Route exact path="/search" element={<Search updateBookLists={bookAction} />} />
       </Routes>
