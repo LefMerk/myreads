@@ -39,6 +39,6 @@ export default function Book ({ book, moveTo }) {
 }
 
 Book.propTypes = {
-  book: PropTypes.array.isRequired, 
+  book: PropTypes.object.isRequired, 
   moveTo: PropTypes.func.isRequired,
 };

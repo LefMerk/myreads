@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from 'prop-types';
+import { debounce } from "lodash";
 import * as BooksAPI from "../utils/BooksAPI";
 import Book from "./Book";
+import Loader from "./Loader";
 
 export default function Search({ updateBookLists }) {
 
@@ -11,6 +13,7 @@ export default function Search({ updateBookLists }) {
   const [mappedBooks, setMappedBooks] = useState([]);
   const [searchedBooks, setSearchedBooks] = useState([]);
   const [noResults, setNoResults] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const allBooks = async () => {
@@ -21,27 +24,34 @@ export default function Search({ updateBookLists }) {
     allBooks();
   }, [])
 
-  useEffect(() => {   
+  const sendQuery = useCallback(async (query) => {
     if (query !== "") {
-      const books = async () => {
-        const response = await BooksAPI.search(query);
-        if (response.error) {
-          setBooksFound([]);
-          setNoResults(true);
-        }
-        else {
-          setBooksFound(response);
-          setNoResults(false);
-        }
-        //console.log(response);
+      setIsLoading(true);
+      const response = await BooksAPI.search(query);
+      if (response.error) {
+        setBooksFound([]);
+        setNoResults(true);
       }
-
-      books();
+      else {
+        setBooksFound(response);
+        setNoResults(false);
+      }
+      setIsLoading(false);
+      //console.log(response);
     }
     else {
       setBooksFound([]);
+      setIsLoading(false);
     }  
 
+  }, []);
+
+  const debouncedSearch = useMemo(() => {
+    return debounce(sendQuery, 500);
+  }, [sendQuery]);
+
+  useEffect(() => {
+    debouncedSearch(query);
   }, [query]);
 
   useEffect(() => {
@@ -95,6 +105,7 @@ export default function Search({ updateBookLists }) {
             }
           </ol>
         </div>
+        {isLoading && <Loader />}
       </div>
   );
 }
