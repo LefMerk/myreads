@@ -101,7 +101,7 @@ export default function Search({ updateBookLists }) {
                     <Book book={book} moveTo={categorizeBook}  />
                   </li>)
                 )
-              : (<p>No results!</p>) 
+              : (<p>Not found any book!</p>) 
             }
           </ol>
         </div>
