@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
 import BookShelf from "./BookShelf";
 
@@ -37,3 +38,8 @@ export default function BookList({ books, moveBook }) {
       </div>
   );
 }
+
+BookList.propTypes = {
+  books: PropTypes.array.isRequired, 
+  moveBook: PropTypes.func.isRequired,
+};

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from 'prop-types';
 import * as BooksAPI from "../utils/BooksAPI";
 import Book from "./Book";
 
@@ -97,3 +98,7 @@ export default function Search({ updateBookLists }) {
       </div>
   );
 }
+
+Search.propTypes = {
+  updateBookLists: PropTypes.func.isRequired,
+};
