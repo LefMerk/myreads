@@ -1,4 +1,12 @@
+import PropTypes from 'prop-types';
+
 export default function Book ({ book, moveTo }) {
+    const shelves = [
+      {id:"1", shelfName:"currentlyReading", shelfDisplayName:"Currently Reading"},
+      {id:"2", shelfName:"wantToRead", shelfDisplayName:"Want to Read"},
+      {id:"3", shelfName:"read", shelfDisplayName:"Read"},
+      {id:"4", shelfName:"none", shelfDisplayName:"None"},
+    ];
 
     return(
         <div className="book">
@@ -13,15 +21,12 @@ export default function Book ({ book, moveTo }) {
             ></div>
             <div className="book-shelf-changer">
               <select defaultValue={book.shelf ? book.shelf : "none"} onChange={(e) => moveTo(book, e.target.value)}>
-                <option value="none" disabled>
+                <option disabled>
                   Move to...
                 </option>
-                <option value="currentlyReading">
-                  Currently Reading
-                </option>
-                <option value="wantToRead">Want to Read</option>
-                <option value="read">Read</option>
-                <option value="none">None</option>
+                {shelves.map(shelf => 
+                  <option key={shelf.id} value={shelf.shelfName}>{shelf.shelfDisplayName}</option>
+                )}
               </select>
             </div>
           </div>
@@ -32,3 +37,8 @@ export default function Book ({ book, moveTo }) {
         </div>
     );
 }
+
+Book.propTypes = {
+  book: PropTypes.array.isRequired, 
+  moveTo: PropTypes.func.isRequired,
+};
