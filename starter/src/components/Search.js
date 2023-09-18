@@ -52,7 +52,7 @@ export default function Search({ updateBookLists }) {
 
   useEffect(() => {
     debouncedSearch(query);
-  }, [query]);
+  }, [query, debouncedSearch]);
 
   useEffect(() => {
     const matchBooks = booksFound.map(book => {
